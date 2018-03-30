@@ -21,6 +21,7 @@ let tDestination;
 let tFirstArrival;
 let tArrivalFrequency;
 let train;
+let tableBody = $('#tableBody');
 
 // Function Calls
 
@@ -42,4 +43,14 @@ $('#submitButton').on("click", function(event){
     $('#role').val('');
     $('#startDate').val('');
     $('#monthlyRate').val('');
+});
+
+database.ref().orderByChild('dateAdded').limitToLast(1).on('child_added', function(snapshot) {
+    let data = snapshot.val();
+    let row = $('<tr>');
+    let col1 = $(`<td>${data.name}</td>`);
+    let col2 = $(`<td>${data.destination}</td>`);
+    let col3 = $(`<td>${data.frequency}</td>`);
+    row.append(col1, col2, col3);
+    tableBody.append(row);
 });
