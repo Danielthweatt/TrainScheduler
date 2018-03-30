@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Train Tracker</title>
+    <title>Train Scheduler</title>
 
     <!-- reset styles -->
     <link rel="stylesheet" href="./assets/css/reset.css">
@@ -13,14 +13,14 @@
     <!-- Bootstrap-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <!-- other styles -->
-    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/styles.css">
     <!-- Firebase Reference -->
-    <script src="https://www.gstatic.com/firebasejs/4.12.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
 </head>
 <body class="container">
     <br>
     <div class="jumbotron">
-        <h1 class="text-center">Train Tracker</h1>
+        <h1 class="text-center">Train Scheduler</h1>
         <h3 class="text-center">When is Your Train Arriving?</h3>
     </div>
     <div class="row">
@@ -56,20 +56,20 @@
                 <div class="panel-body">
                     <form>
                         <div class="form-group">
-                            <label for="employeeName">Train Name</label>
-                            <input class="form-control" id="employeeName" type="text">
+                            <label for="trainName">Train Name</label>
+                            <input class="form-control" id="trainName" type="text">
                         </div>
                         <div class="form-group">
-                            <label for="role">Destination</label>
-                            <input class="form-control" id="role" type="text">
+                            <label for="destination">Destination</label>
+                            <input class="form-control" id="destination" type="text">
                         </div>
                         <div class="form-group">
-                            <label for="startDate">First Train Time (HH:mm - military time)</label>
-                            <input class="form-control" id="startDate" type="text">
+                            <label for="firstTrainTime">First Train Time (HH:mm - military time)</label>
+                            <input class="form-control" id="firstTrainTime" type="text">
                         </div>
                         <div class="form-group">
-                            <label for="monthlyRate">Frequency (min)</label>
-                            <input class="form-control" id="monthlyRate" type="text">
+                            <label for="frequency">Frequency (min)</label>
+                            <input class="form-control" id="frequency" type="text">
                         </div>
                             <button class="btn btn-primary" id="submitButton" type="submit">Submit</button>
                     </form>
