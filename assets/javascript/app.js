@@ -36,8 +36,13 @@ let col5;
 
 const arrival = function(firstArrival, arrivalFrequency) {
     let minutesSinceFirstArrival = moment().diff(moment(firstArrival, 'HH:mm'), 'minutes');
-    minutesAway = minutesSinceFirstArrival % arrivalFrequency;
-    nextArrival = 0;
+    if (minutesSinceFirstArrival < 0) {
+        nextArrival = moment(firstArrival, 'HH:mm').format('hh:mm A');
+        minutesAway = minutesSinceFirstArrival * -1;
+    } else {
+        minutesAway = minutesSinceFirstArrival % arrivalFrequency;
+        nextArrival = moment(firstArrival, 'HH:mm').format('X');
+    };
 };
 
 // Function Calls
@@ -56,10 +61,10 @@ $('#submitButton').on("click", function(event){
         dateAdded: firebase.database.ServerValue.TIMESTAMP
     };
     database.ref().push(train);
-    $('#employeeName').val('');
-    $('#role').val('');
-    $('#startDate').val('');
-    $('#monthlyRate').val('');
+    $('#trainName').val('');
+    $('#destination').val('');
+    $('#firstTrainTime').val('');
+    $('#frequency').val('');
 });
 
 database.ref().orderByChild('dateAdded').limitToLast(1).on('child_added', function(snapshot) {
