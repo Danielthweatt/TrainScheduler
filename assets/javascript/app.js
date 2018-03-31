@@ -54,3 +54,7 @@ database.ref().orderByChild('dateAdded').limitToLast(1).on('child_added', functi
     row.append(col1, col2, col3);
     tableBody.append(row);
 });
+
+// This will subtract the second moment (the moment of the parameter) 
+// from the first (the current moment) and return the answer in years
+console.log(moment().diff(moment('1995-12-12 09:30'), 'years'));
