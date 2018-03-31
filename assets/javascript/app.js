@@ -22,6 +22,23 @@ let tFirstArrival;
 let tArrivalFrequency;
 let train;
 let tableBody = $('#tableBody');
+let data;
+let nextArrival;
+let minutesAway;
+let row;
+let col1;
+let col2;
+let col3;
+let col4;
+let col5;
+
+// Functions
+
+const arrival = function(firstArrival, arrivalFrequency) {
+    let minutesSinceFirstArrival = moment().diff(moment(firstArrival, 'HH:mm'), 'minutes');
+    minutesAway = minutesSinceFirstArrival % arrivalFrequency;
+    nextArrival = 0;
+};
 
 // Function Calls
 
@@ -46,15 +63,14 @@ $('#submitButton').on("click", function(event){
 });
 
 database.ref().orderByChild('dateAdded').limitToLast(1).on('child_added', function(snapshot) {
-    let data = snapshot.val();
-    let row = $('<tr>');
-    let col1 = $(`<td>${data.name}</td>`);
-    let col2 = $(`<td>${data.destination}</td>`);
-    let col3 = $(`<td>${data.frequency}</td>`);
-    row.append(col1, col2, col3);
+    data = snapshot.val();
+    arrival(data.firstTrainTime, data.frequency);
+    row = $('<tr>');
+    col1 = $(`<td>${data.name}</td>`);
+    col2 = $(`<td>${data.destination}</td>`);
+    col3 = $(`<td>${data.frequency}</td>`);
+    col4 = $(`<td>${nextArrival}</td>`);
+    col5 = $(`<td>${minutesAway}</td>`);
+    row.append(col1, col2, col3, col4, col5);
     tableBody.append(row);
 });
-
-// This will subtract the second moment (the moment of the parameter) 
-// from the first (the current moment) and return the answer in years
-console.log(moment().diff(moment('1995-12-12 09:30'), 'years'));
