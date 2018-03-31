@@ -23,27 +23,18 @@ let tArrivalFrequency;
 let train;
 let tableBody = $('#tableBody');
 let data;
+let minutesSinceFirstArrival;
 let nextArrival;
 let minutesAway;
+let secondSinceFirstArrival;
+let secondsAway;
+let nextArrivalInSeconds;
 let row;
 let col1;
 let col2;
 let col3;
 let col4;
 let col5;
-
-// Functions
-
-const arrival = function(firstArrival, arrivalFrequency) {
-    let minutesSinceFirstArrival = moment().diff(moment(firstArrival, 'HH:mm'), 'minutes');
-    if (minutesSinceFirstArrival < 0) {
-        nextArrival = moment(firstArrival, 'HH:mm').format('hh:mm A');
-        minutesAway = minutesSinceFirstArrival * -1;
-    } else {
-        minutesAway = minutesSinceFirstArrival % arrivalFrequency;
-        nextArrival = moment(firstArrival, 'HH:mm').format('X');
-    };
-};
 
 // Function Calls
 
@@ -69,7 +60,17 @@ $('#submitButton').on("click", function(event){
 
 database.ref().orderByChild('dateAdded').limitToLast(1).on('child_added', function(snapshot) {
     data = snapshot.val();
-    arrival(data.firstTrainTime, data.frequency);
+    minutesSinceFirstArrival = moment().diff(moment(data.firstTrainTime, 'HH:mm'), 'minutes');
+    if (minutesSinceFirstArrival < 0) {
+        nextArrival = moment(data.firstTrainTime, 'HH:mm').format('hh:mm A');
+        minutesAway = minutesSinceFirstArrival * -1;
+    } else {
+        minutesAway = data.frequency - (minutesSinceFirstArrival % data.frequency);
+        secondSinceFirstArrival = minutesSinceFirstArrival * 60;
+        secondsAway = minutesAway * 60;
+        nextArrivalInSeconds = parseInt(moment(data.firstTrainTime, 'HH:mm').format('X')) + secondSinceFirstArrival + secondsAway;
+        nextArrival = moment(nextArrivalInSeconds, 'X').format('hh:mm A');
+    };
     row = $('<tr>');
     col1 = $(`<td>${data.name}</td>`);
     col2 = $(`<td>${data.destination}</td>`);
