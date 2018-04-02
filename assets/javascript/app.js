@@ -58,25 +58,27 @@ $('#submitButton').on("click", function(event){
     $('#frequency').val('');
 });
 
-database.ref().orderByChild('dateAdded').limitToLast(1).on('child_added', function(snapshot) {
-    data = snapshot.val();
-    minutesSinceFirstArrival = moment().diff(moment(data.firstTrainTime, 'HH:mm'), 'minutes');
-    if (minutesSinceFirstArrival < 0) {
-        nextArrival = moment(data.firstTrainTime, 'HH:mm').format('hh:mm A');
-        minutesAway = minutesSinceFirstArrival * -1;
-    } else {
-        minutesAway = data.frequency - (minutesSinceFirstArrival % data.frequency);
-        secondSinceFirstArrival = minutesSinceFirstArrival * 60;
-        secondsAway = minutesAway * 60;
-        nextArrivalInSeconds = parseInt(moment(data.firstTrainTime, 'HH:mm').format('X')) + secondSinceFirstArrival + secondsAway;
-        nextArrival = moment(nextArrivalInSeconds, 'X').format('hh:mm A');
-    };
-    row = $('<tr>');
-    col1 = $(`<td>${data.name}</td>`);
-    col2 = $(`<td>${data.destination}</td>`);
-    col3 = $(`<td>${data.frequency}</td>`);
-    col4 = $(`<td>${nextArrival}</td>`);
-    col5 = $(`<td>${minutesAway}</td>`);
-    row.append(col1, col2, col3, col4, col5);
-    tableBody.append(row);
+database.ref().orderByChild('dateAdded').on('child_added', function(snapshot) {
+    snapshot.forEach(function(childsnapshot) {
+        data = childsnapshot.val();
+        minutesSinceFirstArrival = moment().diff(moment(data.firstTrainTime, 'HH:mm'), 'minutes');
+        if (minutesSinceFirstArrival < 0) {
+            nextArrival = moment(data.firstTrainTime, 'HH:mm').format('hh:mm A');
+            minutesAway = minutesSinceFirstArrival * -1;
+        } else {
+            minutesAway = data.frequency - (minutesSinceFirstArrival % data.frequency);
+            secondSinceFirstArrival = minutesSinceFirstArrival * 60;
+            secondsAway = minutesAway * 60;
+            nextArrivalInSeconds = parseInt(moment(data.firstTrainTime, 'HH:mm').format('X')) + secondSinceFirstArrival + secondsAway;
+            nextArrival = moment(nextArrivalInSeconds, 'X').format('hh:mm A');
+        };
+        row = $('<tr>');
+        col1 = $(`<td>${data.name}</td>`);
+        col2 = $(`<td>${data.destination}</td>`);
+        col3 = $(`<td>${data.frequency}</td>`);
+        col4 = $(`<td>${nextArrival}</td>`);
+        col5 = $(`<td>${minutesAway}</td>`);
+        row.append(col1, col2, col3, col4, col5);
+        tableBody.append(row);
+    });
 });
