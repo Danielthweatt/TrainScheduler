@@ -49,7 +49,6 @@ $('#submitButton').on("click", function(event){
         destination: tDestination,
         firstTrainTime: tFirstArrival,
         frequency: tArrivalFrequency,
-        dateAdded: firebase.database.ServerValue.TIMESTAMP
     };
     database.ref().push(train);
     $('#trainName').val('');
@@ -58,9 +57,8 @@ $('#submitButton').on("click", function(event){
     $('#frequency').val('');
 });
 
-database.ref().orderByChild('dateAdded').on('child_added', function(snapshot) {
-    snapshot.forEach(function(childsnapshot) {
-        data = childsnapshot.val();
+database.ref().on('child_added', function(snapshot) {
+        data = snapshot.val();
         minutesSinceFirstArrival = moment().diff(moment(data.firstTrainTime, 'HH:mm'), 'minutes');
         if (minutesSinceFirstArrival < 0) {
             nextArrival = moment(data.firstTrainTime, 'HH:mm').format('hh:mm A');
@@ -80,5 +78,4 @@ database.ref().orderByChild('dateAdded').on('child_added', function(snapshot) {
         col5 = $(`<td>${minutesAway}</td>`);
         row.append(col1, col2, col3, col4, col5);
         tableBody.append(row);
-    });
 });
