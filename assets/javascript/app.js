@@ -21,6 +21,7 @@ let tDestination;
 let tFirstArrival;
 let tArrivalFrequency;
 let train;
+let trainTrackerIndex;
 let tableBody = $('#tableBody');
 let data;
 let minutesSinceFirstArrival;
@@ -38,7 +39,11 @@ let col5;
 
 // Function Calls
 
-$('#submitButton').on("click", function(event){
+database.ref().once('value', function(snapshot) {
+    trainTrackerIndex = snapshot.numChildren();
+});
+
+$('#submitButton').on("click", function(event) {
     event.preventDefault();
     tName = $('#trainName').val().trim();
     tDestination = $('#destination').val().trim();
@@ -49,16 +54,20 @@ $('#submitButton').on("click", function(event){
         destination: tDestination,
         firstTrainTime: tFirstArrival,
         frequency: tArrivalFrequency,
+        index: trainTrackerIndex
     };
     database.ref().push(train);
+    trainTrackerIndex++;
     $('#trainName').val('');
     $('#destination').val('');
     $('#firstTrainTime').val('');
     $('#frequency').val('');
 });
 
-database.ref().on('child_added', function(snapshot) {
-        data = snapshot.val();
+database.ref().on('value', function(snapshot) {
+    tableBody.empty();
+    snapshot.forEach(function(childSnapshot) {
+        data = childSnapshot.val();
         minutesSinceFirstArrival = moment().diff(moment(data.firstTrainTime, 'HH:mm'), 'minutes');
         if (minutesSinceFirstArrival < 0) {
             nextArrival = moment(data.firstTrainTime, 'HH:mm').format('hh:mm A');
@@ -74,8 +83,9 @@ database.ref().on('child_added', function(snapshot) {
         col1 = $(`<td>${data.name}</td>`);
         col2 = $(`<td>${data.destination}</td>`);
         col3 = $(`<td>${data.frequency}</td>`);
-        col4 = $(`<td>${nextArrival}</td>`);
-        col5 = $(`<td>${minutesAway}</td>`);
+        col4 = $(`<td id="arrivalTimeFor${data.index}">${nextArrival}</td>`);
+        col5 = $(`<td id="intervalFor${data.index}">${minutesAway}</td>`);
         row.append(col1, col2, col3, col4, col5);
         tableBody.append(row);
+    });
 });
