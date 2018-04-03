@@ -87,5 +87,20 @@ database.ref().on('value', function(snapshot) {
         col5 = $(`<td id="intervalFor${data.index}">${minutesAway}</td>`);
         row.append(col1, col2, col3, col4, col5);
         tableBody.append(row);
+        setInterval(function() {
+            minutesSinceFirstArrival = moment().diff(moment(childSnapshot.val().firstTrainTime, 'HH:mm'), 'minutes');
+            if (minutesSinceFirstArrival < 0) {
+                nextArrival = moment(childSnapshot.val().firstTrainTime, 'HH:mm').format('hh:mm A');
+                minutesAway = minutesSinceFirstArrival * -1;
+            } else {
+                minutesAway = childSnapshot.val().frequency - (minutesSinceFirstArrival % childSnapshot.val().frequency);
+                secondSinceFirstArrival = minutesSinceFirstArrival * 60;
+                secondsAway = minutesAway * 60;
+                nextArrivalInSeconds = parseInt(moment(childSnapshot.val().firstTrainTime, 'HH:mm').format('X')) + secondSinceFirstArrival + secondsAway;
+                nextArrival = moment(nextArrivalInSeconds, 'X').format('hh:mm A');
+            };
+            $(`#arrivalTimeFor${childSnapshot.val().index}`).text(nextArrival);
+            $(`#intervalFor${childSnapshot.val().index}`).text(minutesAway);
+        }, 60000);
     });
 });
