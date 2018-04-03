@@ -36,6 +36,7 @@ let col2;
 let col3;
 let col4;
 let col5;
+let intervals = {};
 
 // Function Declarations
 
@@ -93,8 +94,9 @@ database.ref().on('value', function(snapshot) {
         col5 = $(`<td id="intervalFor${data.index}">${minutesAway}</td>`);
         row.append(col1, col2, col3, col4, col5);
         tableBody.append(row);
-        setInterval(function() {
-            calculateArrivalInformation(childSnapshot.val())
+        clearInterval(intervals[`interval${childSnapshot.val().index}`]);
+        intervals[`interval${childSnapshot.val().index}`] = setInterval(function() {
+            calculateArrivalInformation(childSnapshot.val());
             $(`#arrivalTimeFor${childSnapshot.val().index}`).text(nextArrival);
             $(`#intervalFor${childSnapshot.val().index}`).text(minutesAway);
         }, 60000);
